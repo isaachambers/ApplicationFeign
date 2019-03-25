@@ -3,6 +3,7 @@ package com.feign.demo.clients;
 import java.util.List;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.annotation.Primary;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,8 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.feign.demo.clients.fallback.CustomerClientFallback;
 import com.feign.demo.domain.Customer;
 
-@FeignClient(name = "CUSTOMERSERVICE", fallback = CustomerClientFallback.class, primary = false)
+@FeignClient(name = "CUSTOMERSERVICE", fallback = CustomerClientFallback.class, primary = true)
 @RequestMapping(value = "customer")
+@Primary
 public interface CustomerClient {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/getAllCustomers")
