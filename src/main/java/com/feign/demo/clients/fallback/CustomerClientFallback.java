@@ -3,12 +3,10 @@ package com.feign.demo.clients.fallback;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
 import com.feign.demo.clients.CustomerClient;
 import com.feign.demo.domain.Customer;
 
-@Component
+//@Component
 public class CustomerClientFallback implements CustomerClient {
 
 	@Override

@@ -3,7 +3,6 @@ package com.feign.demo.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.feign.demo.clients.CustomerClient;
+import com.feign.demo.clients.PaymentsClient;
 import com.feign.demo.domain.Customer;
+import com.feign.demo.domain.Payment;
 
 @RestController
 public class CustomerController {
@@ -22,9 +23,7 @@ public class CustomerController {
 	private CustomerClient customerClient;
 
 	@Autowired
-	public CustomerController(@Qualifier("customerClientFallback") CustomerClient customerClient) {
-		this.customerClient = customerClient;
-	}
+	private PaymentsClient paymentsClient;
 
 	@RequestMapping(path = "/getAllCustomers", method = RequestMethod.GET)
 	public ResponseEntity<Object> getAllCustomers() {
@@ -73,6 +72,30 @@ public class CustomerController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+	}
+
+	@RequestMapping(path = "/registerPayment", method = RequestMethod.POST)
+	public ResponseEntity<Object> saveCustomer(@RequestBody Payment payment) {
+		Payment p = null;
+		Customer c = null;
+		try {
+			c = customerClient.getCustomerById(payment.getCustomerId());
+			if (null == c) {
+				return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("Customer Does not Exist");
+			} else {
+				p = paymentsClient.saveCustomerPayment(payment);
+				return new ResponseEntity<>(p, HttpStatus.OK);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			if (null == c) {
+				return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("Customer Does not Exist");
+			} else {
+
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+			}
 		}
 	}
 }

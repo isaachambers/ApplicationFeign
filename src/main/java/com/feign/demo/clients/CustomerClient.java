@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.feign.demo.clients.fallback.CustomerClientFallback;
 import com.feign.demo.domain.Customer;
 
-@FeignClient(name = "CUSTOMERSERVICE", fallback = CustomerClientFallback.class, primary = true)
+@FeignClient(name = "CUSTOMERSERVICE")
+//@FeignClient(name = "CUSTOMERSERVICE", fallback = CustomerClientFallback.class, primary = true)
 @RequestMapping(value = "customer")
 @Primary
 public interface CustomerClient {
